@@ -13,6 +13,8 @@ use syn::DeriveInput;
 pub fn source(input: TokenStream) -> TokenStream {
     let source_text = proc_macro::Span::call_site().source_text().unwrap();
 
+    let source_text = unindent::unindent(&source_text);
+
     let input2 = syn::parse_macro_input!(input as syn::Expr);
 
     let expanded = quote::quote!(
