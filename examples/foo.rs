@@ -1,16 +1,19 @@
 //shower::make_answer!();
 
 fn main() {
-    let (k, src) = shower::source!(|| {
+    shower::source!(k, src, || {
         for i in 0..5 {
             println!("{}", i);
         }
         4
     });
 
-    k();
+    //k();
 
-    println!("{}", src);
+    let a=unindent::unindent(&src);
+    println!("{}", a);
+
+    k();
 
     // println!("source code:\n    {}", k);
 

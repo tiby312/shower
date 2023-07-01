@@ -2,21 +2,48 @@ extern crate proc_macro;
 use std::str::FromStr;
 
 use proc_macro::TokenStream;
-use syn::DeriveInput;
-
+use syn::parse::Parse;
 // #[proc_macro]
 // pub fn make_answer(_item: TokenStream) -> TokenStream {
 //     "fn answer() -> u32 { 42 }".parse().unwrap()
 // }
 
+use syn::{Expr, Ident, Token};
+
+struct MacroInput {
+    a: Ident,
+    comma1: Token![,],
+    b: Ident,
+    comma2: Token![,],
+    c: Expr,
+}
+
+impl Parse for MacroInput {
+    fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
+        Ok(Self {
+            a: input.parse()?,
+            comma1: input.parse()?,
+            b: input.parse()?,
+            comma2: input.parse()?,
+            c: input.parse()?,
+        })
+    }
+}
+
+use syn::spanned::Spanned;
 #[proc_macro]
 pub fn source(input: TokenStream) -> TokenStream {
     let source_text = proc_macro::Span::call_site().source_text().unwrap();
 
-    let input2 = syn::parse_macro_input!(input as syn::Expr);
+    let input2 = syn::parse_macro_input!(input as MacroInput);
+    let a = input2.a;
+    let b = input2.b;
+    let c = input2.c;
+    //let source_text = input2.span().source_text().unwrap();
 
     let expanded = quote::quote!(
-        (#input2,#source_text)
+        let #a = #c;
+        let #b = #source_text;
     );
 
     TokenStream::from(expanded)
