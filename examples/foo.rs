@@ -5,7 +5,7 @@ fn main() {
         for i in 0..5 {
             println!("{}", i);
         }
-        4
+        "{abc}"
     });
 
     println!("{}", src);
