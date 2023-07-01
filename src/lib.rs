@@ -2,6 +2,7 @@ extern crate proc_macro;
 use std::str::FromStr;
 
 use proc_macro::TokenStream;
+use syn::DeriveInput;
 
 // #[proc_macro]
 // pub fn make_answer(_item: TokenStream) -> TokenStream {
@@ -9,21 +10,29 @@ use proc_macro::TokenStream;
 // }
 
 #[proc_macro]
-pub fn source(mut input: TokenStream) -> TokenStream {
+pub fn source(input: TokenStream) -> TokenStream {
     let source_text = proc_macro::Span::call_site().source_text().unwrap();
 
-    //let source_text = source_text.trim_start_matches("shower::python!(|| {");
-    //let source_text = source_text.trim_end_matches("})");
+    let input2 = syn::parse_macro_input!(input as syn::Expr);
 
-    let source = format!("{source_text:?}");
-    let k: TokenStream = source.parse().unwrap();
+    let expanded = quote::quote!(
+        (#input2,#source_text)
+    );
 
-    let code = format!("{}{}{}", "{", input.to_string(), "}");
+    TokenStream::from(expanded)
 
-    let open =
-        TokenStream::from_str(&format!("{}({},{}){}", "{", code, k.to_string(), "}")).unwrap();
+    // //let source_text = source_text.trim_start_matches("shower::python!(|| {");
+    // //let source_text = source_text.trim_end_matches("})");
 
-    open
+    // let source = format!("{source_text:?}");
+    // let k: TokenStream = source.parse().unwrap();
+
+    // let code = format!("{}{}{}", "{", input.to_string(), "}");
+
+    // let open =
+    //     TokenStream::from_str(&format!("{}({},{}){}", "{", code, k.to_string(), "}")).unwrap();
+
+    // open
 }
 
 // #[proc_macro]
