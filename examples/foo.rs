@@ -1,16 +1,19 @@
 //shower::make_answer!();
 
 fn main() {
-    let (k, src) = shower::source!(|| {
+    let (k, src) = shower::source!({
         for i in 0..5 {
             println!("{}", i);
         }
         4
     });
 
-    k();
+    println!("source code:\n{}", src);
 
-    println!("{}", src);
+    println!("running program:");
+    let k = k();
+
+    println!("program returned={}", k);
 
     // println!("source code:\n    {}", k);
 

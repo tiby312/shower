@@ -2,8 +2,8 @@ extern crate proc_macro;
 use std::str::FromStr;
 
 use proc_macro::TokenStream;
+use syn::spanned::Spanned;
 use syn::DeriveInput;
-
 // #[proc_macro]
 // pub fn make_answer(_item: TokenStream) -> TokenStream {
 //     "fn answer() -> u32 { 42 }".parse().unwrap()
@@ -11,14 +11,15 @@ use syn::DeriveInput;
 
 #[proc_macro]
 pub fn source(input: TokenStream) -> TokenStream {
-    let source_text = proc_macro::Span::call_site().source_text().unwrap();
+    let input2 = syn::parse_macro_input!(input as syn::Expr);
+
+    //let source_text = proc_macro::Span::call_site().source_text().unwrap();
+    let source_text = input2.span().source_text().unwrap();
 
     let source_text = unindent::unindent(&source_text);
 
-    let input2 = syn::parse_macro_input!(input as syn::Expr);
-
     let expanded = quote::quote!(
-        (#input2,#source_text)
+        (||#input2,#source_text)
     );
 
     TokenStream::from(expanded)
