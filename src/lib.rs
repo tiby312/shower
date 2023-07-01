@@ -9,7 +9,7 @@ use proc_macro::TokenStream;
 // }
 
 #[proc_macro]
-pub fn python(mut input: TokenStream) -> TokenStream {
+pub fn source(mut input: TokenStream) -> TokenStream {
     let source_text = proc_macro::Span::call_site().source_text().unwrap();
 
     //let source_text = source_text.trim_start_matches("shower::python!(|| {");
@@ -24,7 +24,6 @@ pub fn python(mut input: TokenStream) -> TokenStream {
         TokenStream::from_str(&format!("{}({},{}){}", "{", code, k.to_string(), "}")).unwrap();
 
     open
-    
 }
 
 // #[proc_macro]
